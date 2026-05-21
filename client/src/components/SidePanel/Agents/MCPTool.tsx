@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Constants } from 'librechat-data-provider';
-import { ChevronDown, Clock, Code2 } from 'lucide-react';
+import { ChevronDown, Clock, Code2, Server } from 'lucide-react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import {
   Label,
@@ -119,8 +119,8 @@ export default function MCPTool({ serverInfo }: { serverInfo?: MCPServerInfo }) 
               >
                 {statusIcon && <div className="flex items-center">{statusIcon}</div>}
 
-                {serverInfo.metadata.icon && (
-                  <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-full">
+                  {serverInfo.metadata.icon ? (
                     <div
                       className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-center bg-no-repeat dark:bg-white/20"
                       style={{
@@ -128,8 +128,12 @@ export default function MCPTool({ serverInfo }: { serverInfo?: MCPServerInfo }) 
                         backgroundSize: 'cover',
                       }}
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-surface-secondary text-text-secondary">
+                      <Server className="h-3.5 w-3.5" aria-hidden="true" />
+                    </div>
+                  )}
+                </div>
                 <div
                   className="grow px-2 py-1.5"
                   style={{ textOverflow: 'ellipsis', wordBreak: 'break-all', overflow: 'hidden' }}

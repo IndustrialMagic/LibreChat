@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
-import { ChevronLeft } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { ChevronLeft, Check, Copy } from 'lucide-react';
 import { AgentCapabilities } from 'librechat-data-provider';
 import { useFormContext, Controller } from 'react-hook-form';
+import { TooltipAnchor, useToastContext } from '@librechat/client';
 import type { AgentForm } from '~/common';
 import { useAgentPanelContext } from '~/Providers';
 import AgentSubagents from './AgentSubagents';
@@ -13,11 +14,25 @@ import { Panel } from '~/common';
 
 export default function AdvancedPanel() {
   const localize = useLocalize();
+  const { showToast } = useToastContext();
   const methods = useFormContext<AgentForm>();
   const { control, watch } = methods;
   const currentAgentId = watch('id');
+  const [copied, setCopied] = useState(false);
 
   const { agentsConfig, setActivePanel } = useAgentPanelContext();
+
+  const handleCopyAgentId = async () => {
+    if (!currentAgentId) return;
+    try {
+      await navigator.clipboard.writeText(currentAgentId);
+      setCopied(true);
+      showToast({ message: localize('com_ui_agent_id_copied'), status: 'success' });
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      showToast({ message: localize('com_ui_error'), status: 'error' });
+    }
+  };
   const chainEnabled = useMemo(
     () => agentsConfig?.capabilities.includes(AgentCapabilities.chain) ?? false,
     [agentsConfig],
@@ -29,24 +44,63 @@ export default function AdvancedPanel() {
 
   return (
     <div className="mb-1 flex w-full flex-col gap-2 text-sm">
-      <div className="advanced-panel relative flex flex-col items-center px-16 pt-2 text-center">
-        <div className="absolute left-0 top-4">
-          <button
-            type="button"
-            className="btn btn-neutral relative"
-            onClick={() => {
-              setActivePanel(Panel.builder);
-            }}
-            aria-label={localize('com_ui_back_to_builder')}
-          >
-            <div className="advanced-panel-content flex w-full items-center justify-center gap-2">
-              <ChevronLeft aria-hidden="true" />
-            </div>
-          </button>
-        </div>
-        <div className="mb-2 mt-2 text-xl font-medium">{localize('com_ui_advanced_settings')}</div>
-      </div>
+      <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2 pt-1">
+        <button
+          type="button"
+          onClick={() => setActivePanel(Panel.builder)}
+          aria-label={localize('com_ui_back_to_builder')}
+          className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-border-light text-text-secondary transition-colors hover:bg-surface-secondary hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary"
+        >
+          <ChevronLeft className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+        </button>
+        <h2 className="text-center text-base font-semibold text-text-primary">
+          {localize('com_ui_advanced_settings')}
+        </h2>
+        <span aria-hidden="true" className="h-10 w-10" />
+      </header>
       <div className="flex flex-col gap-4 px-2 pb-2">
+        {currentAgentId && (
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="agent-id-display"
+              className="text-[11px] font-medium uppercase tracking-wide text-text-tertiary"
+            >
+              {localize('com_ui_agent_id')}
+            </label>
+            <div className="flex items-center gap-1 rounded-lg border border-border-light bg-surface-secondary px-2 py-1.5">
+              <code
+                id="agent-id-display"
+                className="flex-1 truncate font-mono text-xs text-text-secondary"
+                title={currentAgentId}
+              >
+                {currentAgentId}
+              </code>
+              <TooltipAnchor
+                description={localize('com_ui_agent_id_copy')}
+                side="top"
+                role="button"
+                aria-label={localize('com_ui_agent_id_copy')}
+                className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded text-text-secondary transition-colors hover:bg-surface-tertiary hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary"
+                onClick={handleCopyAgentId}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCopyAgentId();
+                  }
+                }}
+              >
+                <span className="t-icon-swap" data-state={copied ? 'b' : 'a'} aria-hidden="true">
+                  <span className="t-icon" data-icon="a">
+                    <Copy className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="t-icon" data-icon="b">
+                    <Check className="h-4 w-4 text-green-500" aria-hidden="true" />
+                  </span>
+                </span>
+              </TooltipAnchor>
+            </div>
+          </div>
+        )}
         <MaxAgentSteps />
         {subagentsEnabled && (
           <Controller

@@ -118,24 +118,20 @@ export default function VersionPanel() {
 
   return (
     <div className="scrollbar-gutter-stable h-full min-h-[40vh] overflow-auto pb-12 text-sm">
-      <div className="version-panel relative flex flex-col items-center px-16 py-4 text-center">
-        <div className="absolute left-0 top-4">
-          <button
-            type="button"
-            className="btn btn-neutral relative"
-            onClick={() => {
-              setActivePanel(Panel.builder);
-            }}
-          >
-            <div className="version-panel-content flex w-full items-center justify-center gap-2">
-              <ChevronLeft />
-            </div>
-          </button>
-        </div>
-        <div className="mb-2 mt-2 text-xl font-medium">
+      <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2 px-2 pb-3 pt-1">
+        <button
+          type="button"
+          onClick={() => setActivePanel(Panel.builder)}
+          aria-label={localize('com_ui_back_to_builder')}
+          className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-border-light text-text-secondary transition-colors hover:bg-surface-secondary hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary"
+        >
+          <ChevronLeft className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+        </button>
+        <h2 className="text-center text-base font-semibold text-text-primary">
           {localize('com_ui_agent_version_history')}
-        </div>
-      </div>
+        </h2>
+        <span aria-hidden="true" className="h-10 w-10" />
+      </header>
       <div className="flex flex-col gap-4 px-2">
         <VersionContent
           selectedAgentId={selectedAgentId}
