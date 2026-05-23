@@ -1,24 +1,14 @@
-import { useMemo } from 'react';
 import { Controller, useWatch, useFormContext } from 'react-hook-form';
 import { EModelEndpoint, getEndpointField } from 'librechat-data-provider';
 import type { AgentForm, IconComponentTypes } from '~/common';
-import {
-  removeFocusOutlines,
-  processAgentOption,
-  defaultTextProps,
-  validateEmail,
-  getIconKey,
-  cn,
-} from '~/utils';
-import { useFileMapContext, useAgentPanelContext } from '~/Providers';
+import { removeFocusOutlines, defaultTextProps, validateEmail, getIconKey, cn } from '~/utils';
+import { useAgentPanelContext } from '~/Providers';
 import AgentCategorySelector from './AgentCategorySelector';
 import { useLocalize } from '~/hooks';
 import { Panel } from '~/common';
-import { useGetAgentFiles } from '~/data-provider';
 import { icons } from '~/hooks/Endpoint/Icons';
-import Capabilities from './Capabilities';
 import Instructions from './Instructions';
-import Extensions from './Extensions';
+import ToolsSection from './Tools/ToolsSection';
 import AgentAvatar from './AgentAvatar';
 import Section from './Section';
 
@@ -33,7 +23,6 @@ const compactInputClass = cn(inputClass, 'h-9 text-sm');
 
 export default function AgentConfig() {
   const localize = useLocalize();
-  const fileMap = useFileMapContext();
   const methods = useFormContext<AgentForm>();
   const { setActivePanel, endpointsConfig } = useAgentPanelContext();
 
@@ -45,42 +34,6 @@ export default function AgentConfig() {
   const model = useWatch({ control, name: 'model' });
   const agent = useWatch({ control, name: 'agent' });
   const agent_id = useWatch({ control, name: 'id' });
-
-  const { data: agentFiles = [] } = useGetAgentFiles(agent_id);
-
-  const mergedFileMap = useMemo(() => {
-    const newFileMap = { ...fileMap };
-    agentFiles.forEach((file) => {
-      if (file.file_id) {
-        newFileMap[file.file_id] = file;
-      }
-    });
-    return newFileMap;
-  }, [fileMap, agentFiles]);
-
-  const context_files = useMemo(() => {
-    if (typeof agent === 'string') return [];
-    if (agent?.id !== agent_id) return [];
-    if (agent.context_files) return agent.context_files;
-    const _agent = processAgentOption({ agent, fileMap: mergedFileMap });
-    return _agent.context_files ?? [];
-  }, [agent, agent_id, mergedFileMap]);
-
-  const knowledge_files = useMemo(() => {
-    if (typeof agent === 'string') return [];
-    if (agent?.id !== agent_id) return [];
-    if (agent.knowledge_files) return agent.knowledge_files;
-    const _agent = processAgentOption({ agent, fileMap: mergedFileMap });
-    return _agent.knowledge_files ?? [];
-  }, [agent, agent_id, mergedFileMap]);
-
-  const code_files = useMemo(() => {
-    if (typeof agent === 'string') return [];
-    if (agent?.id !== agent_id) return [];
-    if (agent.code_files) return agent.code_files;
-    const _agent = processAgentOption({ agent, fileMap: mergedFileMap });
-    return _agent.code_files ?? [];
-  }, [agent, agent_id, mergedFileMap]);
 
   const providerValue = typeof provider === 'string' ? provider : provider?.value;
   let Icon: IconComponentTypes | null | undefined;
@@ -199,16 +152,8 @@ export default function AgentConfig() {
       {/* INSTRUCTIONS */}
       <Instructions />
 
-      {/* CAPABILITIES — compact toggle rows */}
-      <Capabilities
-        agentId={agent_id}
-        contextFiles={context_files}
-        knowledgeFiles={knowledge_files}
-        codeFiles={code_files}
-      />
-
-      {/* EXTENSIONS — unified tools/actions/mcp/skills */}
-      <Extensions agentId={agent_id} />
+      {/* TOOLS — unified built-ins / tools / actions / mcp / skills */}
+      <ToolsSection agentId={agent_id} />
 
       {/* SUPPORT CONTACT — collapsed by default */}
       <Section title={localize('com_ui_support_contact')} defaultOpen={false}>
