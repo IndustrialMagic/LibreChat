@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 import { ChevronLeft, Check, Copy } from 'lucide-react';
-import { AgentCapabilities } from 'librechat-data-provider';
+import { AgentCapabilities, PermissionTypes, Permissions } from 'librechat-data-provider';
 import { useFormContext, Controller } from 'react-hook-form';
-import { TooltipAnchor, useToastContext } from '@librechat/client';
+import { Switch, TooltipAnchor, useToastContext } from '@librechat/client';
 import type { AgentForm } from '~/common';
 import { useAgentPanelContext } from '~/Providers';
 import AgentSubagents from './AgentSubagents';
 import MaxAgentSteps from './MaxAgentSteps';
 import AgentHandoffs from './AgentHandoffs';
-import { useLocalize } from '~/hooks';
+import { useLocalize, useHasAccess } from '~/hooks';
 import AgentChain from './AgentChain';
 import { Panel } from '~/common';
 
@@ -41,6 +41,15 @@ export default function AdvancedPanel() {
     () => agentsConfig?.capabilities.includes(AgentCapabilities.subagents) ?? false,
     [agentsConfig],
   );
+  const skillsEnabled = useMemo(
+    () => agentsConfig?.capabilities.includes(AgentCapabilities.skills) ?? false,
+    [agentsConfig],
+  );
+  const hasSkillsAccess = useHasAccess({
+    permissionType: PermissionTypes.SKILLS,
+    permission: Permissions.USE,
+  });
+  const showSkillsKillSwitch = skillsEnabled && hasSkillsAccess;
 
   return (
     <div className="mb-1 flex w-full flex-col gap-2 text-sm">
@@ -122,6 +131,33 @@ export default function AdvancedPanel() {
             defaultValue={[]}
             render={({ field }) => <AgentChain field={field} currentAgentId={currentAgentId} />}
           />
+        )}
+        {showSkillsKillSwitch && (
+          <div className="rounded-xl border border-border-light p-3">
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="skills_enabled_killswitch"
+                className="text-sm font-medium text-text-primary"
+              >
+                {localize('com_ui_tools_skills_enabled_kill_switch')}
+              </label>
+              <Controller
+                name="skills_enabled"
+                control={control}
+                render={({ field }) => (
+                  <Switch
+                    id="skills_enabled_killswitch"
+                    checked={field.value === true}
+                    onCheckedChange={(v: boolean) => field.onChange(Boolean(v))}
+                    aria-label={localize('com_ui_tools_skills_enabled_kill_switch')}
+                  />
+                )}
+              />
+            </div>
+            <p className="mt-1 text-xs text-text-secondary">
+              {localize('com_ui_tools_skills_enabled_kill_switch_hint')}
+            </p>
+          </div>
         )}
       </div>
     </div>
