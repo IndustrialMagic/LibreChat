@@ -8,7 +8,6 @@ import { cn } from '~/utils';
 
 interface Props {
   item: AgentItem;
-  onClick: (item: AgentItem) => void;
   onInfo: (item: AgentItem) => void;
   onRemove: (item: AgentItem) => void;
   dataState?: 'enter' | 'idle' | 'exit';
@@ -27,7 +26,7 @@ function RowIcon({ item }: { item: AgentItem }) {
   if (iconUrl && !imgError) {
     return (
       <span
-        className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md bg-surface-tertiary"
+        className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white"
         aria-hidden="true"
       >
         <img
@@ -51,7 +50,7 @@ function RowIcon({ item }: { item: AgentItem }) {
   );
 }
 
-export default function ToolRow({ item, onClick, onInfo, onRemove, dataState }: Props) {
+export default function ToolRow({ item, onInfo, onRemove, dataState }: Props) {
   const localize = useLocalize();
   const suffix = getSuffix(item);
   const displayName = item.kind === 'builtin' ? localize(item.name as TranslationKeys) : item.name;
@@ -65,17 +64,13 @@ export default function ToolRow({ item, onClick, onInfo, onRemove, dataState }: 
         'hover:bg-surface-secondary',
       )}
     >
-      <button
-        type="button"
-        onClick={() => onClick(item)}
-        className="flex min-w-0 flex-1 items-center gap-2.5 text-left focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring-primary"
-      >
+      <div className="flex min-w-0 flex-1 items-center gap-2.5">
         <RowIcon item={item} />
         <span className="flex min-w-0 items-center gap-1 truncate text-sm text-text-primary">
           <span className="truncate font-medium">{displayName}</span>
           {suffix && <span className="text-text-tertiary">{suffix}</span>}
         </span>
-      </button>
+      </div>
       {item.status === 'needs_setup' && (
         <span
           aria-label={localize('com_ui_tools_needs_setup')}
@@ -84,7 +79,7 @@ export default function ToolRow({ item, onClick, onInfo, onRemove, dataState }: 
       )}
       <div
         className={cn(
-          'flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity duration-150',
+          'flex shrink-0 items-center gap-0.5 opacity-0',
           'group-focus-within:opacity-100 group-hover:opacity-100',
         )}
       >
@@ -93,8 +88,8 @@ export default function ToolRow({ item, onClick, onInfo, onRemove, dataState }: 
           onClick={() => onInfo(item)}
           aria-label={localize('com_ui_tools_info')}
           className={cn(
-            'flex size-6 items-center justify-center rounded-md text-text-tertiary',
-            'hover:bg-surface-tertiary hover:text-text-primary',
+            'flex size-6 items-center justify-center rounded-md text-text-secondary',
+            'hover:bg-surface-hover hover:text-text-primary',
             'focus:outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring-primary',
           )}
         >
@@ -105,8 +100,8 @@ export default function ToolRow({ item, onClick, onInfo, onRemove, dataState }: 
           onClick={() => onRemove(item)}
           aria-label={localize('com_ui_tools_remove')}
           className={cn(
-            'flex size-6 items-center justify-center rounded-md text-text-tertiary',
-            'hover:bg-surface-tertiary hover:text-text-primary',
+            'flex size-6 items-center justify-center rounded-md text-text-secondary',
+            'hover:bg-surface-hover hover:text-text-primary',
             'focus:outline-none focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring-primary',
           )}
         >

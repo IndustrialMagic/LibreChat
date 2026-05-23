@@ -78,13 +78,9 @@ export default function AgentFooter({
   return (
     <div className="mb-1 flex w-full flex-col gap-2">
       {showButtons && (
-        <div className="grid grid-cols-2 gap-2">
+        <div className={`grid gap-2 ${agent_id ? 'grid-cols-2' : 'grid-cols-1'}`}>
           <AdvancedButton setActivePanel={setActivePanel} />
-          {agent_id ? (
-            <VersionButton setActivePanel={setActivePanel} />
-          ) : (
-            <div aria-hidden="true" />
-          )}
+          {!!agent_id && <VersionButton setActivePanel={setActivePanel} />}
         </div>
       )}
       {user?.role === SystemRoles.ADMIN && showButtons && <AdminSettings />}

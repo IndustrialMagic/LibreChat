@@ -182,7 +182,6 @@ export default function ToolsSection({ agentId }: Props) {
             <li key={entry.key}>
               <ToolRow
                 item={entry.item}
-                onClick={() => setOpen(true)}
                 onInfo={setInfoItem}
                 onRemove={handleQuickRemove}
                 dataState={entry.phase}
