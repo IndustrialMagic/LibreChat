@@ -10,7 +10,6 @@ interface Props {
   item: AgentItem;
   onInfo: (item: AgentItem) => void;
   onRemove: (item: AgentItem) => void;
-  dataState?: 'enter' | 'idle' | 'exit';
 }
 
 function getSuffix(item: AgentItem): string | null {
@@ -50,20 +49,13 @@ function RowIcon({ item }: { item: AgentItem }) {
   );
 }
 
-function ToolRowImpl({ item, onInfo, onRemove, dataState }: Props) {
+function ToolRowImpl({ item, onInfo, onRemove }: Props) {
   const localize = useLocalize();
   const suffix = getSuffix(item);
   const displayName = item.kind === 'builtin' ? localize(item.name as TranslationKeys) : item.name;
 
   return (
-    <div
-      data-state={dataState}
-      className={cn(
-        't-list-item',
-        'group relative flex w-full items-center gap-2 rounded-lg px-2 py-1.5',
-        'hover:bg-surface-secondary',
-      )}
-    >
+    <div className="group relative flex w-full items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-surface-secondary">
       <div className="flex min-w-0 flex-1 items-center gap-2.5">
         <RowIcon item={item} />
         <span className="flex min-w-0 items-center gap-1 truncate text-sm text-text-primary">

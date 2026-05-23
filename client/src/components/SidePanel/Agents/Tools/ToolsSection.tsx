@@ -7,10 +7,6 @@ import type { AgentItem } from './items/types';
 import ToolRow from './ToolRow';
 import ToolInfoDialog from './ToolInfoDialog';
 import ToolsMarketplaceDialog from './ToolsMarketplaceDialog';
-import { useAnimatedList } from './useAnimatedList';
-
-const itemKey = (item: AgentItem) => `${item.kind}:${item.id}`;
-const LIST_EXIT_MS = 200;
 import { buildCatalog } from './items/catalog';
 import { deriveSelectedItems } from './items/selectors';
 import { computeToggleAction } from './items/mutations';
@@ -141,8 +137,7 @@ export default function ToolsSection({ agentId }: Props) {
     [getValues, setValue],
   );
 
-  const animatedEntries = useAnimatedList(selected, itemKey, LIST_EXIT_MS);
-  const isEmpty = animatedEntries.length === 0;
+  const isEmpty = selected.length === 0;
 
   return (
     <div className="mb-3 flex flex-col">
@@ -178,14 +173,9 @@ export default function ToolsSection({ agentId }: Props) {
         </button>
       ) : (
         <ul className="flex flex-col gap-1.5">
-          {animatedEntries.map((entry) => (
-            <li key={entry.key}>
-              <ToolRow
-                item={entry.item}
-                onInfo={setInfoItem}
-                onRemove={handleQuickRemove}
-                dataState={entry.phase}
-              />
+          {selected.map((item) => (
+            <li key={`${item.kind}:${item.id}`}>
+              <ToolRow item={item} onInfo={setInfoItem} onRemove={handleQuickRemove} />
             </li>
           ))}
         </ul>

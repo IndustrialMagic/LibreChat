@@ -92,7 +92,6 @@ function ToolCardImpl({ item, selected, onToggle, onConfigure }: ToolCardProps) 
   return (
     <div
       className={cn(
-        't-card-select',
         'group relative flex h-32 w-full flex-col rounded-2xl border',
         selected
           ? 'border-emerald-500/60 bg-emerald-500/[0.06] shadow-sm'
@@ -125,8 +124,7 @@ function ToolCardImpl({ item, selected, onToggle, onConfigure }: ToolCardProps) 
               </p>
               {selected && (
                 <span
-                  className="t-success-check flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white"
-                  data-state="in"
+                  className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white"
                   aria-hidden="true"
                 >
                   <Check className="size-3" strokeWidth={3} />

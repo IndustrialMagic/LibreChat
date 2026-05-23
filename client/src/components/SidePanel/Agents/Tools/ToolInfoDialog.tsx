@@ -35,7 +35,7 @@ function IdentityIcon({ item }: { item: AgentItem }) {
   if (iconUrl && !imgError) {
     return (
       <span
-        className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-surface-tertiary"
+        className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white"
         aria-hidden="true"
       >
         <img
@@ -77,8 +77,8 @@ interface FactRowProps {
 
 function FactRow({ label, value }: FactRowProps) {
   return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-border-light py-2 last:border-b-0">
-      <span className="text-xs uppercase tracking-wide text-text-tertiary">{label}</span>
+    <div className="flex items-baseline justify-between gap-3 py-2">
+      <span className="text-xs uppercase tracking-wide text-text-secondary">{label}</span>
       <span className="truncate text-right text-sm text-text-primary">{value}</span>
     </div>
   );
@@ -141,15 +141,13 @@ function InfoBody({ item, localize }: BodyProps) {
         <IdentityIcon item={item} />
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-lg font-semibold text-text-primary">{name}</h2>
-          <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
+          <span className="text-[11px] uppercase tracking-wide text-text-secondary">
             {kindLabel}
           </span>
         </div>
-        {description && (
-          <p className="text-sm leading-relaxed text-text-secondary">{description}</p>
-        )}
+        {description && <p className="text-sm leading-relaxed text-text-primary">{description}</p>}
       </div>
-      <div className="border-t border-border-light px-6 py-3">
+      <div className="px-6 py-3">
         <FactRow label={localize('com_ui_tools_info_source')} value={sourceLabel} />
         <FactRow label={localize('com_ui_tools_info_identifier')} value={item.id} />
         {item.kind === 'mcp' && (
