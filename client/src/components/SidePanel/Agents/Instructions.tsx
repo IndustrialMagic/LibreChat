@@ -131,35 +131,13 @@ export default function Instructions() {
 
       <OGDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <OGDialogContent
-          className="flex h-[85vh] max-h-[85vh] w-[95vw] max-w-3xl flex-col gap-4 p-5"
-          showCloseButton={true}
+          className="flex h-[85vh] max-h-[85vh] w-11/12 max-w-6xl flex-col gap-4 p-6"
+          showCloseButton={false}
         >
-          <OGDialogHeader className="flex flex-row items-center justify-between gap-4 pr-14">
-            <OGDialogTitle className="text-left text-base font-semibold">
+          <OGDialogHeader className="mb-2 pr-14">
+            <OGDialogTitle className="text-left text-2xl font-semibold">
               {localize('com_ui_instructions')}
             </OGDialogTitle>
-            <DropdownPopup
-              portal={true}
-              mountByState={true}
-              unmountOnHide={true}
-              preserveTabOrder={true}
-              isOpen={isDialogMenuOpen}
-              setIsOpen={setIsDialogMenuOpen}
-              trigger={
-                <Menu.MenuButton
-                  id="variables-menu-button-dialog"
-                  render={
-                    <Button variant="outline" size="sm" className="h-7 gap-1.5 px-2.5 text-xs">
-                      <PlusCircle className="h-3 w-3" strokeWidth={1.75} aria-hidden={true} />
-                      {localize('com_ui_variables')}
-                    </Button>
-                  }
-                />
-              }
-              items={variableItems}
-              menuId={dialogMenuId}
-              className="z-[200]"
-            />
           </OGDialogHeader>
           <Controller
             name="instructions"
@@ -174,7 +152,29 @@ export default function Instructions() {
               />
             )}
           />
-          <div className="flex justify-end">
+          <div className="flex items-center justify-between">
+            <DropdownPopup
+              portal={true}
+              mountByState={true}
+              unmountOnHide={true}
+              preserveTabOrder={true}
+              isOpen={isDialogMenuOpen}
+              setIsOpen={setIsDialogMenuOpen}
+              trigger={
+                <Menu.MenuButton
+                  id="variables-menu-button-dialog"
+                  render={
+                    <Button variant="outline" className="gap-1.5">
+                      <PlusCircle className="h-4 w-4" strokeWidth={1.75} aria-hidden={true} />
+                      {localize('com_ui_variables')}
+                    </Button>
+                  }
+                />
+              }
+              items={variableItems}
+              menuId={dialogMenuId}
+              className="z-[200]"
+            />
             <OGDialogClose asChild>
               <Button>{localize('com_ui_done')}</Button>
             </OGDialogClose>

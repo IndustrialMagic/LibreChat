@@ -138,7 +138,10 @@ function ControlCombobox({
         )}
         {!isCollapsed && (
           <>
-            <span className="flex-grow truncate text-left">
+            <span
+              className="flex-grow truncate text-left"
+              title={(displayValue != null ? displayValue : selectedValue) || undefined}
+            >
               {displayValue != null
                 ? displayValue || selectPlaceholder
                 : selectedValue || selectPlaceholder}
